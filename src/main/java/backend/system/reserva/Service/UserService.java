@@ -11,9 +11,11 @@ import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
 
+import backend.system.reserva.DTO.CreateUser;
 import backend.system.reserva.DTO.LoginReq;
 import backend.system.reserva.DTO.LoginRes;
 import backend.system.reserva.Exception.BadCrendential;
+import backend.system.reserva.Exception.EmailJaEmUso;
 import backend.system.reserva.Exception.RunTimeError;
 import backend.system.reserva.Model.Role;
 import backend.system.reserva.Model.User;
@@ -29,8 +31,8 @@ public class UserService {
     private final RoleRepository rr;
     private final JwtEncoder jwtEncoder;
 
-    //ok
-    public Long createUser(backend.system.reserva.DTO.createUser newUser) throws Exception {
+    //Erro no tratamento de exeção
+    public Long createUser(CreateUser newUser) throws EmailJaEmUso {
         Role userRole = rr.findByNome(Role.Valores.CLIENTE.name())
                 .orElseThrow(() -> new RunTimeError());
         long id = 0l;
@@ -38,8 +40,12 @@ public class UserService {
             User user = newUser.createUserClient(encoder, userRole);
             user.setRole(Set.of(userRole));
             id = ur.save(user).getId();
+            return id;
         }
-        return id;
+        else
+        {
+            throw new EmailJaEmUso();
+        }
     }
 
     //ok

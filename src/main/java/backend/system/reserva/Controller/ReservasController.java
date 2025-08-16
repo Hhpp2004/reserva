@@ -34,18 +34,11 @@ public class ReservasController {
         if(aux.isPresent())
         {
             List<Reserva> lista = rs.lista(aux);
-            if(lista == null)
-            {
-                return ResponseEntity.badRequest().build();
-            }
-            else
-            {
-                return ResponseEntity.ok(lista);
-            }
+            return ResponseEntity.ok(lista);
         }
         else
         {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.ok().build();
         }
     }
 
@@ -55,14 +48,7 @@ public class ReservasController {
     {
         Optional<User> aux = ur.findById(Long.valueOf(user.getName()));
         long flag = rs.createReserva(novaReserva,aux.get());
-        if(flag != 0l)
-        {
-            return ResponseEntity.ok("Reserva criada "+flag);
-        }
-        else
-        {
-            return ResponseEntity.badRequest().build();
-        }
+        return ResponseEntity.ok("Reserva criada "+flag);
     }
 
     @PatchMapping("/reserva/{id}/cancelar")
@@ -71,13 +57,6 @@ public class ReservasController {
     {
         Optional<User> aux = ur.findById(Long.valueOf(user.getName()));
         boolean flag = rs.cancelar(id, aux.get());
-        if(flag == true)
-        {
-            return ResponseEntity.ok("Reserva cancelado");
-        }
-        else
-        {
-            return ResponseEntity.badRequest().build();
-        }
+        return ResponseEntity.ok("Reserva cancelado: "+flag);
     }
 }

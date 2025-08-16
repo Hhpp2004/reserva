@@ -65,8 +65,10 @@ public class ReservasService {
     // ok
     public boolean cancelar(long id, User user) throws Exception {
         Reserva reserva = rr.findById(id).get();
+        Mesas mesa = mr.findById(reserva.getMesa().getId()).get();
         if (reserva.getUser().getId() == user.getId()) {
             reserva.setStatus(StatusReserva.cancelado);
+            mesa.setStatus(StatusMesa.disponivel);
             rr.save(reserva);
             return true;
         } else {
