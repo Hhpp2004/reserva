@@ -40,7 +40,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 .authorizeHttpRequests(e -> e.requestMatchers(HttpMethod.POST, "/usuario/cadastro").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/usuario/login").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/usuario/login").permitAll().requestMatchers("/error").permitAll().requestMatchers("/usuario/error").permitAll()
                         .anyRequest().authenticated())
                 .csrf(a -> a.disable())
                 .oauth2ResourceServer(o -> o.jwt(Customizer.withDefaults()))
