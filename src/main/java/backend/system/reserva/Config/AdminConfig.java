@@ -34,10 +34,11 @@ public class AdminConfig implements CommandLineRunner {
             newRole.setNome(Role.Valores.CLIENTE.name());
             return rr.save(newRole);
         });
+        System.out.println(role2.toString());
         Optional<User> lista = ur.findByNome("Admin");
 
         lista.ifPresentOrElse(user -> {
-            System.out.println("administrador Existe");
+            System.out.println("administrador Existe "+user.getNome());
         }, () -> {
             User user = new User();
 
