@@ -31,8 +31,8 @@ public class UserService {
     private final RoleRepository rr;
     private final JwtEncoder jwtEncoder;
 
-    //Erro no tratamento de exeção
-    public Long createUser(CreateUser newUser) throws EmailJaEmUso {
+    //ok
+    public Long createUser(CreateUser newUser) throws Exception {
         Role userRole = rr.findByNome(Role.Valores.CLIENTE.name())
                 .orElseThrow(() -> new RunTimeError());
         long id = 0l;
