@@ -9,5 +9,4 @@ public class ReservaApplication {
 		SpringApplication.run(ReservaApplication.class, args);
 		System.out.println("http://localhost:8080");
 	}
-
 }
