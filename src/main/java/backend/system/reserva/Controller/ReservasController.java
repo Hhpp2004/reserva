@@ -44,11 +44,24 @@ public class ReservasController {
 
     @PostMapping("/reserva")
     @PreAuthorize("hasAuthority('SCOPE_CLIENTE')")
-    public ResponseEntity<String> create(@RequestBody ReservaDTO novaReserva,JwtAuthenticationToken user) throws Exception
+    public ResponseEntity<String> create(@RequestBody ReservaDTO novaReserva, JwtAuthenticationToken userToken) throws Exception
     {
-        Optional<User> aux = ur.findById(Long.valueOf(user.getName()));
-        long flag = rs.createReserva(novaReserva,aux.get());
-        return ResponseEntity.ok("Reserva criada "+flag);
+        Optional<User> userOptional = ur.findByNome(userToken.getName());
+        Optional<User> email = ur.findByEmail(userToken.getName());
+        long flag = 0l;
+        if (userOptional.isEmpty() || email.isEmpty()) {
+            return ResponseEntity.badRequest().body("Usuário não encontrado.");
+        }
+        if(userOptional.isPresent())
+        {
+            flag = rs.createReserva(novaReserva, userOptional.get());
+        }
+        else if(!email.isPresent())
+        {
+            flag = rs.createReserva(novaReserva, email.get());
+        }
+        
+        return ResponseEntity.ok("Reserva criada " + flag);
     }
 
     @PatchMapping("/reserva/{id}/cancelar")

@@ -7,6 +7,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import backend.system.reserva.Model.AuthProvider;
 import backend.system.reserva.Model.Role;
 import backend.system.reserva.Model.User;
 import backend.system.reserva.Repository.RoleRepository;
@@ -45,6 +46,7 @@ public class AdminConfig implements CommandLineRunner {
             user.setNome("Admin");
             user.setEmail("admin@gmail.com");
             user.setSenha(passwordEncoder.encode("123"));
+            user.setProvider(AuthProvider.LOCAL);
             user.setRole(Set.of(role));
             ur.save(user);
             System.out.println("Admin create "+user.getNome());

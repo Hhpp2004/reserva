@@ -8,6 +8,8 @@ import backend.system.reserva.DTO.LoginReq;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -27,25 +29,54 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "id_user")
-    private Long id;    
+    private Long id;
     @Column(unique = false)
     private String nome;
     @Column(unique = true)
     private String email;
-    private String senha;    
+    private String senha;
+    private String providerId;
+    private String pictures;
+    @Enumerated(EnumType.STRING)
+    private AuthProvider provider;
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinTable(name = "tb_user_roles", joinColumns = @JoinColumn(name = "id_user"), inverseJoinColumns = @JoinColumn(name= "id_role"))
+    @JoinTable(name = "tb_user_roles", joinColumns = @JoinColumn(name = "id_user"), inverseJoinColumns = @JoinColumn(name = "id_role"))
     private Set<Role> role;
-    
-    public User(String nome, String email, String senha,Set<Role> role) {
+
+    public User(String nome, String email, String senha, Set<Role> role) {
         this.nome = nome;
         this.email = email;
         this.senha = senha;
         this.role = role;
+        this.provider = AuthProvider.LOCAL;
     }
 
-    public Boolean isLoginCorrect(LoginReq password, PasswordEncoder senha)
-    {
+    public User(String nome, String email,  String providerId, String pictures,
+            AuthProvider provider, Set<Role> role) {
+        this.nome = nome;
+        this.email = email;
+        this.senha = null;
+        this.providerId = providerId;
+        this.pictures = pictures;
+        this.provider = AuthProvider.GOOGLE;
+        this.role = role;
+    }
+
+    public Boolean isLoginCorrect(LoginReq password, PasswordEncoder senha) {
         return senha.matches(password.senha(), this.senha);
+    }
+
+    public boolean isOAuth2User() {
+        return this.provider != AuthProvider.LOCAL;
+    }
+
+    public void updateOAuth2User(String nome, String picture) {
+        this.nome = nome;
+        this.pictures = picture;
+    }
+
+    public void setPassword(String password, PasswordEncoder passwordEncoder) {
+        this.senha = passwordEncoder.encode(password);
+        // Não muda o provider - usuário pode ter ambos os acessos
     }
 }
